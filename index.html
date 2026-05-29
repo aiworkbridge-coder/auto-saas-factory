@@ -1,263 +1,197 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sensitive Text Redactor & Anonymizer</title>
-    <meta name="description" content="A powerful, single-page web utility to redact and anonymize sensitive information from text using predefined patterns or custom regular expressions. Enhance data privacy and compliance.">
-    <meta name="keywords" content="text redactor, anonymizer, privacy, data protection, GDPR, PII, sensitive data, regex, utility, frontend, web tool, data scrubbing">
-    <!-- Tailwind CSS CDN -->
+    <title>AI Prompt Architect & Token Estimator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom scrollbar for dark mode textareas */
-        textarea::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        textarea::-webkit-scrollbar-track {
-            background: #1f2937; /* bg-gray-800 */
-            border-radius: 10px;
-        }
-        textarea::-webkit-scrollbar-thumb {
-            background: #4b5563; /* bg-gray-600 */
-            border-radius: 10px;
-        }
-        textarea::-webkit-scrollbar-thumb:hover {
-            background: #6b7280; /* bg-gray-500 */
-        }
-        /* Ensure dark mode is applied by default and gracefully handled */
-        html {
-            color-scheme: dark;
-        }
         body {
-            @apply bg-gray-900 text-gray-100;
-        }
-        /* Specific Tailwind JIT styles for form elements for better dark mode consistency */
-        input[type="checkbox"] {
-            @apply h-5 w-5 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-offset-gray-900;
-        }
-        input[type="radio"] {
-            @apply h-4 w-4 text-blue-600 bg-gray-700 border-gray-600 focus:ring-blue-500 focus:ring-offset-gray-900;
-        }
-        input[type="text"], textarea {
-            @apply bg-gray-900 border-gray-700 text-gray-100 focus:ring-blue-500 focus:border-blue-500;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
     </style>
 </head>
-<body class="font-sans antialiased bg-gray-900 text-gray-100 flex flex-col min-h-screen p-4 sm:p-6 md:p-8">
+<body class="bg-gray-950 text-gray-100 min-h-screen p-4 sm:p-8 flex flex-col items-center">
 
-    <header class="text-center mb-8">
-        <h1 class="text-4xl sm:text-5xl font-extrabold text-blue-400 mb-2">Sensitive Text Redactor & Anonymizer</h1>
-        <p class="text-lg sm:text-xl text-gray-300">Safeguard your information. Redact or anonymize sensitive data with ease.</p>
-    </header>
+    <div class="w-full max-w-6xl mx-auto space-y-8">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-blue-400 mb-2 leading-tight">AI Prompt Architect</h1>
+            <p class="text-xl sm:text-2xl text-gray-300 font-light">Craft structured prompts with real-time token estimation.</p>
+        </header>
 
-    <main class="flex-grow max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-        <!-- Input & Options Section -->
-        <section class="bg-gray-800 p-6 rounded-lg shadow-xl border border-gray-700 flex flex-col">
-            <h2 class="text-2xl font-semibold text-blue-300 mb-4">Input Text</h2>
-            <textarea id="inputText" class="w-full h-64 p-3 border rounded-md resize-y placeholder-gray-400" placeholder="Enter text containing sensitive information here... Example: My email is john.doe@example.com, phone is +1 (555) 123-4567, and IP is 192.168.1.100."></textarea>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Prompt Builder Section -->
+            <section class="bg-gray-900 p-6 sm:p-8 rounded-xl shadow-lg border border-gray-800 flex flex-col space-y-6">
+                <h2 class="text-2xl font-bold text-gray-200 border-b border-gray-700 pb-4 mb-4">Prompt Components</h2>
 
-            <h3 class="text-xl font-semibold text-blue-300 mt-6 mb-3">Redaction Options</h3>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                 <div>
-                    <p class="font-medium text-gray-200 mb-2">Predefined Patterns:</p>
-                    <label class="flex items-center space-x-2 mb-2 cursor-pointer">
-                        <input type="checkbox" id="patternEmail">
-                        <span>Email Addresses</span>
-                    </label>
-                    <label class="flex items-center space-x-2 mb-2 cursor-pointer">
-                        <input type="checkbox" id="patternPhone">
-                        <span>Phone Numbers</span>
-                    </label>
-                    <label class="flex items-center space-x-2 mb-2 cursor-pointer">
-                        <input type="checkbox" id="patternCreditCard">
-                        <span>Credit Card Numbers (basic)</span>
-                    </label>
-                    <label class="flex items-center space-x-2 mb-2 cursor-pointer">
-                        <input type="checkbox" id="patternIP">
-                        <span>IP Addresses</span>
-                    </label>
-                    <label class="flex items-center space-x-2 mb-2 cursor-pointer">
-                        <input type="checkbox" id="patternDate">
-                        <span>Dates (MM/DD/YYYY, YYYY-MM-DD)</span>
-                    </label>
+                    <label for="persona" class="block text-sm font-medium text-gray-400 mb-2">Persona (Optional)</label>
+                    <textarea id="persona" rows="2" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors duration-200 resize-none" placeholder="e.g., 'You are an expert content strategist.'"></textarea>
                 </div>
 
                 <div>
-                    <label for="customRegex" class="font-medium text-gray-200 block mb-2">Custom Regex:</label>
-                    <input type="text" id="customRegex" class="w-full p-2 border rounded-md placeholder-gray-400" placeholder="e.g., \b(secret|confidential)\b">
-                    <p class="text-sm text-gray-400 mt-1">Provide a JavaScript regex string (e.g., `\bPII\b`).</p>
-
-                    <label for="redactionChar" class="font-medium text-gray-200 block mt-4 mb-2">Redaction Character/String:</label>
-                    <input type="text" id="redactionChar" class="w-full p-2 border rounded-md placeholder-gray-400" value="[REDACTED]" maxlength="20">
-                    <p class="text-sm text-gray-400 mt-1">Text to replace matched patterns (e.g., `*`, `[REDACTED]`).</p>
-
-                    <div class="mt-4">
-                        <p class="font-medium text-gray-200 mb-2">Replacement Mode:</p>
-                        <label class="flex items-center space-x-2 mb-2 cursor-pointer">
-                            <input type="radio" name="anonymizeMode" id="modeRedact" value="redact" checked>
-                            <span>Replace with fixed string</span>
-                        </label>
-                        <label class="flex items-center space-x-2 cursor-pointer">
-                            <input type="radio" name="anonymizeMode" id="modeAnonymize" value="anonymize">
-                            <span>Replace with random string (same length)</span>
-                        </label>
-                    </div>
+                    <label for="task" class="block text-sm font-medium text-gray-400 mb-2">Task <span class="text-red-400">*</span></label>
+                    <textarea id="task" rows="3" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors duration-200 resize-none" placeholder="e.g., 'Generate 5 unique blog post ideas about sustainable living for millennials.'"></textarea>
                 </div>
-            </div>
 
-            <div class="flex flex-col sm:flex-row gap-4 mt-8">
-                <button id="redactButton" class="flex-1 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-colors">
-                    Redact / Anonymize Text
+                <div>
+                    <label for="context" class="block text-sm font-medium text-gray-400 mb-2">Context (Optional)</label>
+                    <textarea id="context" rows="4" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors duration-200 resize-none" placeholder="e.g., 'The target audience is eco-conscious millennials aged 25-35. Our brand promotes zero-waste products.'"></textarea>
+                </div>
+
+                <div>
+                    <label for="format" class="block text-sm font-medium text-gray-400 mb-2">Format (Optional)</label>
+                    <textarea id="format" rows="2" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors duration-200 resize-none" placeholder="e.g., 'Provide output as a numbered list with a catchy title and a 2-sentence description for each idea.'"></textarea>
+                </div>
+
+                <div>
+                    <label for="constraints" class="block text-sm font-medium text-gray-400 mb-2">Constraints (Optional)</label>
+                    <textarea id="constraints" rows="2" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors duration-200 resize-none" placeholder="e.g., 'Avoid jargon. Do not exceed 500 words in total. Focus on actionable tips.'"></textarea>
+                </div>
+
+                <div>
+                    <label for="examples" class="block text-sm font-medium text-gray-400 mb-2">Examples (Optional)</label>
+                    <textarea id="examples" rows="3" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors duration-200 resize-none" placeholder="e.g., 'Example idea: 'Zero-Waste Kitchen Hacks: Your Guide to Sustainable Cooking'.'"></textarea>
+                </div>
+
+                <div class="flex flex-wrap gap-4 mt-6">
+                    <button id="generatePromptBtn" class="flex-grow sm:flex-initial px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-all duration-200 text-center">
+                        Generate Prompt
+                    </button>
+                    <button id="clearAllBtn" class="flex-grow sm:flex-initial px-6 py-3 bg-gray-700 text-gray-200 font-semibold rounded-lg shadow-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-all duration-200 text-center">
+                        Clear All
+                    </button>
+                </div>
+            </section>
+
+            <!-- Generated Prompt & Tools Section -->
+            <section class="bg-gray-900 p-6 sm:p-8 rounded-xl shadow-lg border border-gray-800 flex flex-col space-y-6">
+                <h2 class="text-2xl font-bold text-gray-200 border-b border-gray-700 pb-4 mb-4">Generated Prompt</h2>
+
+                <div>
+                    <label for="generatedPrompt" class="block text-sm font-medium text-gray-400 mb-2">Your Structured Prompt</label>
+                    <textarea id="generatedPrompt" rows="20" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors duration-200 resize-none" placeholder="Your generated AI prompt will appear here..." readonly></textarea>
+                </div>
+
+                <div class="bg-gray-800 p-4 rounded-lg flex items-center justify-between">
+                    <span class="text-gray-300 font-medium">Estimated Tokens:</span>
+                    <span id="tokenEstimate" class="text-blue-400 text-xl font-bold">0</span>
+                </div>
+
+                <button id="copyToClipboardBtn" class="w-full px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-all duration-200">
+                    Copy to Clipboard
                 </button>
-                <button id="clearButton" class="flex-1 px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-colors">
-                    Clear All
-                </button>
-            </div>
-        </section>
-
-        <!-- Output Section -->
-        <section class="bg-gray-800 p-6 rounded-lg shadow-xl border border-gray-700 flex flex-col">
-            <h2 class="text-2xl font-semibold text-blue-300 mb-4">Output Text</h2>
-            <textarea id="outputText" class="w-full h-full p-3 border rounded-md resize-y placeholder-gray-400" placeholder="Redacted or anonymized text will appear here..." readonly></textarea>
-            <button id="copyOutputButton" class="mt-4 w-full px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-colors">
-                Copy Output
-            </button>
-        </section>
-    </main>
-
-    <footer class="text-center text-gray-500 text-sm mt-auto mb-4">
-        <p>&copy; 2023 Secure Text Utility. Crafted for global privacy demands.</p>
-    </footer>
+                <div id="copySuccessMessage" class="hidden text-center text-sm text-green-400 mt-2">Copied to clipboard!</div>
+            </section>
+        </div>
+    </div>
 
     <script>
-        // Predefined Regex patterns for various sensitive data types
-        const patterns = {
-            email: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g,
-            // Comprehensive phone pattern for various international and local formats
-            phone: /\b(?:\+?\d{1,3}[-. ]?)?(?:\(?\d{2,5}\)?[-. ]?)?(?:\d{1,4}[-. ]?){2}\d{1,4}\b/g,
-            // Basic credit card number pattern (13-16 digits, with optional spaces/hyphens). Does not validate checksums.
-            creditCard: /\b(?:\d[ -]*?){13,16}\b/g,
-            // IPv4 address pattern
-            ipAddress: /\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/g,
-            // Common date formats (e.g., MM/DD/YYYY, DD-MM-YYYY, YYYY/MM/DD)
-            date: /\b(?:\d{1,2}[/-]\d{1,2}[/-]\d{2,4}|\d{4}[/-]\d{1,2}[/-]\d{1,2})\b/g
-        };
+        const personaEl = document.getElementById('persona');
+        const taskEl = document.getElementById('task');
+        const contextEl = document.getElementById('context');
+        const formatEl = document.getElementById('format');
+        const constraintsEl = document.getElementById('constraints');
+        const examplesEl = document.getElementById('examples');
+        const generatedPromptEl = document.getElementById('generatedPrompt');
+        const tokenEstimateEl = document.getElementById('tokenEstimate');
+        const generatePromptBtn = document.getElementById('generatePromptBtn');
+        const copyToClipboardBtn = document.getElementById('copyToClipboardBtn');
+        const clearAllBtn = document.getElementById('clearAllBtn');
+        const copySuccessMessage = document.getElementById('copySuccessMessage');
 
-        // DOM element references
-        const inputTextarea = document.getElementById('inputText');
-        const outputTextarea = document.getElementById('outputText');
-        const redactButton = document.getElementById('redactButton');
-        const clearButton = document.getElementById('clearButton');
-        const copyOutputButton = document.getElementById('copyOutputButton');
-
-        const patternEmail = document.getElementById('patternEmail');
-        const patternPhone = document.getElementById('patternPhone');
-        const patternCreditCard = document.getElementById('patternCreditCard');
-        const patternIP = document.getElementById('patternIP');
-        const patternDate = document.getElementById('patternDate');
-        const customRegexInput = document.getElementById('customRegex');
-        const redactionCharInput = document.getElementById('redactionChar');
-        const modeRedact = document.getElementById('modeRedact');
-        const modeAnonymize = document.getElementById('modeAnonymize');
-
-        // Generates a random alphanumeric string of a given length
-        function generateRandomString(length) {
-            let result = '';
-            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            const charactersLength = characters.length;
-            for (let i = 0; i < length; i++) {
-                result += characters.charAt(Math.floor(Math.random() * charactersLength));
-            }
-            return result;
+        // Simple token estimation (approximate for English text)
+        // A common rule of thumb for GPT models is ~4 characters per token.
+        function estimateTokens(text) {
+            if (!text) return 0;
+            return Math.ceil(text.length / 4);
         }
 
-        // Main function to process text based on selected options
-        function processText() {
-            let text = inputTextarea.value;
-            const redactionString = redactionCharInput.value || '[REDACTED]'; // Default redaction string
+        function updateTokenEstimate() {
+            const promptText = generatedPromptEl.value;
+            tokenEstimateEl.textContent = estimateTokens(promptText);
+        }
 
-            let activeRegexes = [];
+        function generatePrompt() {
+            let prompt = [];
 
-            // Add selected predefined patterns to the list
-            if (patternEmail.checked) activeRegexes.push(patterns.email);
-            if (patternPhone.checked) activeRegexes.push(patterns.phone);
-            if (patternCreditCard.checked) activeRegexes.push(patterns.creditCard);
-            if (patternIP.checked) activeRegexes.push(patterns.ipAddress);
-            if (patternDate.checked) activeRegexes.push(patterns.date);
-
-            const customRegexStr = customRegexInput.value.trim();
-            if (customRegexStr) {
-                try {
-                    // Create RegExp object from user's custom regex string
-                    activeRegexes.push(new RegExp(customRegexStr, 'gi')); // 'g' for global, 'i' for case-insensitive
-                } catch (e) {
-                    alert('Invalid custom regex provided: ' + e.message);
-                    return; // Stop processing if custom regex is invalid
-                }
+            if (personaEl.value.trim()) {
+                prompt.push(`**Persona:** ${personaEl.value.trim()}`);
             }
-
-            // If no patterns are selected, output the original text
-            if (activeRegexes.length === 0) {
-                outputTextarea.value = text;
+            if (taskEl.value.trim()) {
+                prompt.push(`**Task:** ${taskEl.value.trim()}`);
+            } else {
+                alert('The "Task" field is required to generate a useful prompt.');
+                taskEl.focus();
                 return;
             }
+            if (contextEl.value.trim()) {
+                prompt.push(`**Context:** ${contextEl.value.trim()}`);
+            }
+            if (formatEl.value.trim()) {
+                prompt.push(`**Format:** ${formatEl.value.trim()}`);
+            }
+            if (constraintsEl.value.trim()) {
+                prompt.push(`**Constraints:** ${constraintsEl.value.trim()}`);
+            }
+            if (examplesEl.value.trim()) {
+                prompt.push(`**Examples:**\n${examplesEl.value.trim()}`);
+            }
 
-            // Combine all active regex patterns into a single one for efficient processing
-            // This is done by joining their sources with a '|' (OR) operator
-            const finalRegex = new RegExp(
-                activeRegexes.map(r => r.source).join('|'),
-                'gi' // Ensure global and case-insensitive flags are applied
-            );
-
-            // Replace matched sensitive data
-            text = text.replace(finalRegex, (match) => {
-                if (modeAnonymize.checked) {
-                    // Replace with a random string of the same length to preserve text structure
-                    return generateRandomString(match.length);
-                } else {
-                    // Replace with the user-defined fixed redaction string
-                    return redactionString;
-                }
-            });
-
-            outputTextarea.value = text; // Display processed text
+            generatedPromptEl.value = prompt.join('\n\n') + '\n\n---END PROMPT---';
+            updateTokenEstimate();
         }
 
-        // Event Listeners for buttons
-        redactButton.addEventListener('click', processText);
+        function copyToClipboard() {
+            if (generatedPromptEl.value) {
+                navigator.clipboard.writeText(generatedPromptEl.value)
+                    .then(() => {
+                        copySuccessMessage.classList.remove('hidden');
+                        setTimeout(() => {
+                            copySuccessMessage.classList.add('hidden');
+                        }, 2000);
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy: ', err);
+                        alert('Failed to copy prompt to clipboard. Please try again or copy manually.');
+                    });
+            }
+        }
 
-        clearButton.addEventListener('click', () => {
-            inputTextarea.value = '';
-            outputTextarea.value = '';
-            // Reset all checkboxes and inputs to their default state
-            patternEmail.checked = false;
-            patternPhone.checked = false;
-            patternCreditCard.checked = false;
-            patternIP.checked = false;
-            patternDate.checked = false;
-            customRegexInput.value = '';
-            redactionCharInput.value = '[REDACTED]';
-            modeRedact.checked = true; // Set default mode to 'redact'
-        });
+        function clearAll() {
+            personaEl.value = '';
+            taskEl.value = '';
+            contextEl.value = '';
+            formatEl.value = '';
+            constraintsEl.value = '';
+            examplesEl.value = '';
+            generatedPromptEl.value = '';
+            updateTokenEstimate();
+            copySuccessMessage.classList.add('hidden'); // Hide any previous copy message
+        }
 
-        copyOutputButton.addEventListener('click', () => {
-            outputTextarea.select(); // Select the text in the output area
-            outputTextarea.setSelectionRange(0, 99999); // For mobile devices
-            document.execCommand('copy'); // Copy the selected text to clipboard
+        // Event Listeners
+        generatePromptBtn.addEventListener('click', generatePrompt);
+        copyToClipboardBtn.addEventListener('click', copyToClipboard);
+        clearAllBtn.addEventListener('click', clearAll);
 
-            // Provide visual feedback to the user
-            const originalText = copyOutputButton.textContent;
-            copyOutputButton.textContent = 'Copied!';
-            copyOutputButton.classList.add('bg-green-500', 'hover:bg-green-600');
-            copyOutputButton.classList.remove('bg-green-600', 'hover:bg-green-700');
-            setTimeout(() => {
-                copyOutputButton.textContent = originalText;
-                copyOutputButton.classList.remove('bg-green-500', 'hover:bg-green-600');
-                copyOutputButton.classList.add('bg-green-600', 'hover:bg-green-700');
-            }, 2000); // Revert button text and color after 2 seconds
-        });
+        // Optional: Update token estimate on input for immediate feedback
+        const inputElements = [personaEl, taskEl, contextEl, formatEl, constraintsEl, examplesEl];
+        inputElements.forEach(el => el.addEventListener('input', () => {
+             // Re-generate prompt and update token estimate if any input changes after initial generation
+             // Or, simply update the generated prompt visually and its token estimate
+             // For simplicity, let's keep it on button click for generatePrompt,
+             // but if we want *live* generation, uncomment this:
+             // generatePrompt();
+        }));
+
+        // Initial update
+        updateTokenEstimate();
     </script>
 </body>
 </html>

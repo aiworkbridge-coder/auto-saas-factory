@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universal Data Formatter</title>
+    <title>Sensitive Text Redactor & Anonymizer</title>
+    <meta name="description" content="A powerful, single-page web utility to redact and anonymize sensitive information from text using predefined patterns or custom regular expressions. Enhance data privacy and compliance.">
+    <meta name="keywords" content="text redactor, anonymizer, privacy, data protection, GDPR, PII, sensitive data, regex, utility, frontend, web tool, data scrubbing">
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom scrollbar for a premium dark mode feel */
+        /* Custom scrollbar for dark mode textareas */
         textarea::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -22,405 +25,239 @@
         textarea::-webkit-scrollbar-thumb:hover {
             background: #6b7280; /* bg-gray-500 */
         }
-        /* General scrollbar for the body */
-        body::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+        /* Ensure dark mode is applied by default and gracefully handled */
+        html {
+            color-scheme: dark;
         }
-        body::-webkit-scrollbar-track {
-            background: #0f172a; /* bg-gray-900 */
-            border-radius: 10px;
+        body {
+            @apply bg-gray-900 text-gray-100;
         }
-        body::-webkit-scrollbar-thumb {
-            background: #374151; /* bg-gray-700 */
-            border-radius: 10px;
+        /* Specific Tailwind JIT styles for form elements for better dark mode consistency */
+        input[type="checkbox"] {
+            @apply h-5 w-5 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-offset-gray-900;
         }
-        body::-webkit-scrollbar-thumb:hover {
-            background: #4b5563; /* bg-gray-600 */
+        input[type="radio"] {
+            @apply h-4 w-4 text-blue-600 bg-gray-700 border-gray-600 focus:ring-blue-500 focus:ring-offset-gray-900;
         }
-
-        /* Monospace font for data textareas for better readability of code/data */
-        textarea {
-            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-        }
-
-        /* Styles for disabled elements for better visual feedback */
-        .cursor-not-allowed {
-            cursor: not-allowed;
-        }
-        .opacity-50 {
-            opacity: 0.5;
+        input[type="text"], textarea {
+            @apply bg-gray-900 border-gray-700 text-gray-100 focus:ring-blue-500 focus:border-blue-500;
         }
     </style>
 </head>
-<body class="min-h-screen bg-gray-900 text-gray-100 p-6 md:p-8">
+<body class="font-sans antialiased bg-gray-900 text-gray-100 flex flex-col min-h-screen p-4 sm:p-6 md:p-8">
 
-    <div class="container mx-auto max-w-6xl">
-        <h1 class="text-4xl font-extrabold mb-4 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
-            Universal Data Formatter
-        </h1>
-        <p class="text-gray-400 mb-10 text-center text-lg max-w-3xl mx-auto">
-            Effortlessly convert and format data between JSON, CSV, and Markdown Tables. Perfect for developers, data analysts, and content creators.
-        </p>
+    <header class="text-center mb-8">
+        <h1 class="text-4xl sm:text-5xl font-extrabold text-blue-400 mb-2">Sensitive Text Redactor & Anonymizer</h1>
+        <p class="text-lg sm:text-xl text-gray-300">Safeguard your information. Redact or anonymize sensitive data with ease.</p>
+    </header>
 
-        <div class="md:flex md:space-x-8 space-y-8 md:space-y-0">
-            <!-- Input Section -->
-            <div class="flex-1 bg-gray-800 rounded-xl shadow-2xl p-6 border border-gray-700">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-xl font-semibold text-gray-200">Input Data</h2>
-                    <select id="inputFormatSelect" class="bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 hover:border-blue-500">
-                        <option value="json">JSON</option>
-                        <option value="csv">CSV</option>
-                        <option value="mdtable">Markdown Table</option>
-                    </select>
-                </div>
-                <textarea id="inputArea" class="w-full h-80 bg-gray-900 border border-gray-700 rounded-lg p-4 text-sm resize-y focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500 transition duration-200" placeholder="Paste your data here..."></textarea>
-                <div class="mt-4 flex items-center space-x-4">
-                    <label id="inputFormatOptionLabel" for="inputFormatOption" class="flex items-center text-gray-300 cursor-pointer transition duration-200">
-                        <input type="checkbox" id="inputFormatOption" class="form-checkbox h-4 w-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 transition duration-200">
-                        <span class="ml-2 text-sm">Prettify/Minify JSON</span>
+    <main class="flex-grow max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <!-- Input & Options Section -->
+        <section class="bg-gray-800 p-6 rounded-lg shadow-xl border border-gray-700 flex flex-col">
+            <h2 class="text-2xl font-semibold text-blue-300 mb-4">Input Text</h2>
+            <textarea id="inputText" class="w-full h-64 p-3 border rounded-md resize-y placeholder-gray-400" placeholder="Enter text containing sensitive information here... Example: My email is john.doe@example.com, phone is +1 (555) 123-4567, and IP is 192.168.1.100."></textarea>
+
+            <h3 class="text-xl font-semibold text-blue-300 mt-6 mb-3">Redaction Options</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                <div>
+                    <p class="font-medium text-gray-200 mb-2">Predefined Patterns:</p>
+                    <label class="flex items-center space-x-2 mb-2 cursor-pointer">
+                        <input type="checkbox" id="patternEmail">
+                        <span>Email Addresses</span>
+                    </label>
+                    <label class="flex items-center space-x-2 mb-2 cursor-pointer">
+                        <input type="checkbox" id="patternPhone">
+                        <span>Phone Numbers</span>
+                    </label>
+                    <label class="flex items-center space-x-2 mb-2 cursor-pointer">
+                        <input type="checkbox" id="patternCreditCard">
+                        <span>Credit Card Numbers (basic)</span>
+                    </label>
+                    <label class="flex items-center space-x-2 mb-2 cursor-pointer">
+                        <input type="checkbox" id="patternIP">
+                        <span>IP Addresses</span>
+                    </label>
+                    <label class="flex items-center space-x-2 mb-2 cursor-pointer">
+                        <input type="checkbox" id="patternDate">
+                        <span>Dates (MM/DD/YYYY, YYYY-MM-DD)</span>
                     </label>
                 </div>
-            </div>
 
-            <!-- Output Section -->
-            <div class="flex-1 bg-gray-800 rounded-xl shadow-2xl p-6 border border-gray-700">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-xl font-semibold text-gray-200">Output Data</h2>
-                    <div class="flex items-center space-x-3">
-                        <select id="outputFormatSelect" class="bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 hover:border-blue-500">
-                            <option value="json">JSON</option>
-                            <option value="csv">CSV</option>
-                            <option value="mdtable">Markdown Table</option>
-                        </select>
-                        <button id="copyOutputBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md shadow-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">
-                            Copy
-                        </button>
+                <div>
+                    <label for="customRegex" class="font-medium text-gray-200 block mb-2">Custom Regex:</label>
+                    <input type="text" id="customRegex" class="w-full p-2 border rounded-md placeholder-gray-400" placeholder="e.g., \b(secret|confidential)\b">
+                    <p class="text-sm text-gray-400 mt-1">Provide a JavaScript regex string (e.g., `\bPII\b`).</p>
+
+                    <label for="redactionChar" class="font-medium text-gray-200 block mt-4 mb-2">Redaction Character/String:</label>
+                    <input type="text" id="redactionChar" class="w-full p-2 border rounded-md placeholder-gray-400" value="[REDACTED]" maxlength="20">
+                    <p class="text-sm text-gray-400 mt-1">Text to replace matched patterns (e.g., `*`, `[REDACTED]`).</p>
+
+                    <div class="mt-4">
+                        <p class="font-medium text-gray-200 mb-2">Replacement Mode:</p>
+                        <label class="flex items-center space-x-2 mb-2 cursor-pointer">
+                            <input type="radio" name="anonymizeMode" id="modeRedact" value="redact" checked>
+                            <span>Replace with fixed string</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="anonymizeMode" id="modeAnonymize" value="anonymize">
+                            <span>Replace with random string (same length)</span>
+                        </label>
                     </div>
                 </div>
-                <textarea id="outputArea" class="w-full h-80 bg-gray-900 border border-gray-700 rounded-lg p-4 text-sm resize-y focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500 transition duration-200" placeholder="Formatted data will appear here..." readonly></textarea>
-                <div class="mt-4 flex items-center space-x-4">
-                    <label id="outputMinifyOptionLabel" for="outputMinifyOption" class="flex items-center text-gray-300 cursor-pointer transition duration-200">
-                        <input type="checkbox" id="outputMinifyOption" class="form-checkbox h-4 w-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 transition duration-200">
-                        <span class="ml-2 text-sm">Minify JSON Output</span>
-                    </label>
-                </div>
             </div>
-        </div>
 
-        <div class="flex justify-center mt-10">
-            <button id="convertBtn" class="w-full md:w-auto py-3 px-12 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg shadow-xl transform hover:scale-105 transition duration-300 focus:outline-none focus:ring-4 focus:ring-purple-500 focus:ring-opacity-50">
-                Convert Data
+            <div class="flex flex-col sm:flex-row gap-4 mt-8">
+                <button id="redactButton" class="flex-1 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-colors">
+                    Redact / Anonymize Text
+                </button>
+                <button id="clearButton" class="flex-1 px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-colors">
+                    Clear All
+                </button>
+            </div>
+        </section>
+
+        <!-- Output Section -->
+        <section class="bg-gray-800 p-6 rounded-lg shadow-xl border border-gray-700 flex flex-col">
+            <h2 class="text-2xl font-semibold text-blue-300 mb-4">Output Text</h2>
+            <textarea id="outputText" class="w-full h-full p-3 border rounded-md resize-y placeholder-gray-400" placeholder="Redacted or anonymized text will appear here..." readonly></textarea>
+            <button id="copyOutputButton" class="mt-4 w-full px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-colors">
+                Copy Output
             </button>
-        </div>
+        </section>
+    </main>
 
-        <div id="errorDisplay" class="mt-8 text-red-400 text-center font-medium min-h-[1.5rem]"></div>
-    </div>
+    <footer class="text-center text-gray-500 text-sm mt-auto mb-4">
+        <p>&copy; 2023 Secure Text Utility. Crafted for global privacy demands.</p>
+    </footer>
 
     <script>
-        const inputArea = document.getElementById('inputArea');
-        const outputArea = document.getElementById('outputArea');
-        const inputFormatSelect = document.getElementById('inputFormatSelect');
-        const outputFormatSelect = document.getElementById('outputFormatSelect');
-        const convertBtn = document.getElementById('convertBtn');
-        const copyOutputBtn = document.getElementById('copyOutputBtn');
-        const errorDisplay = document.getElementById('errorDisplay');
-        const inputFormatOption = document.getElementById('inputFormatOption');
-        const outputMinifyOption = document.getElementById('outputMinifyOption');
-        const inputFormatOptionLabel = document.getElementById('inputFormatOptionLabel');
-        const outputMinifyOptionLabel = document.getElementById('outputMinifyOptionLabel');
-
-        // Helper to clear error messages
-        const clearError = () => {
-            errorDisplay.textContent = '';
+        // Predefined Regex patterns for various sensitive data types
+        const patterns = {
+            email: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g,
+            // Comprehensive phone pattern for various international and local formats
+            phone: /\b(?:\+?\d{1,3}[-. ]?)?(?:\(?\d{2,5}\)?[-. ]?)?(?:\d{1,4}[-. ]?){2}\d{1,4}\b/g,
+            // Basic credit card number pattern (13-16 digits, with optional spaces/hyphens). Does not validate checksums.
+            creditCard: /\b(?:\d[ -]*?){13,16}\b/g,
+            // IPv4 address pattern
+            ipAddress: /\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/g,
+            // Common date formats (e.g., MM/DD/YYYY, DD-MM-YYYY, YYYY/MM/DD)
+            date: /\b(?:\d{1,2}[/-]\d{1,2}[/-]\d{2,4}|\d{4}[/-]\d{1,2}[/-]\d{1,2})\b/g
         };
 
-        // --- JSON Formatters ---
-        const jsonParse = (text) => JSON.parse(text);
-        const jsonStringify = (data, options) => {
-            if (options.prettify) {
-                return JSON.stringify(data, null, 2);
+        // DOM element references
+        const inputTextarea = document.getElementById('inputText');
+        const outputTextarea = document.getElementById('outputText');
+        const redactButton = document.getElementById('redactButton');
+        const clearButton = document.getElementById('clearButton');
+        const copyOutputButton = document.getElementById('copyOutputButton');
+
+        const patternEmail = document.getElementById('patternEmail');
+        const patternPhone = document.getElementById('patternPhone');
+        const patternCreditCard = document.getElementById('patternCreditCard');
+        const patternIP = document.getElementById('patternIP');
+        const patternDate = document.getElementById('patternDate');
+        const customRegexInput = document.getElementById('customRegex');
+        const redactionCharInput = document.getElementById('redactionChar');
+        const modeRedact = document.getElementById('modeRedact');
+        const modeAnonymize = document.getElementById('modeAnonymize');
+
+        // Generates a random alphanumeric string of a given length
+        function generateRandomString(length) {
+            let result = '';
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            const charactersLength = characters.length;
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
             }
-            if (options.minify) {
-                return JSON.stringify(data);
-            }
-            return JSON.stringify(data, null, 2); // Default to pretty for readability if no specific option is given
-        };
+            return result;
+        }
 
-        // --- CSV Formatters (Basic, handles common cases but not all edge cases like embedded newlines) ---
-        const csvParse = (text) => {
-            const lines = text.trim().split('\n').filter(line => line.trim());
-            if (lines.length === 0) return [];
-            
-            const headers = lines[0].split(',').map(h => h.trim());
-            const data = [];
-            for (let i = 1; i < lines.length; i++) {
-                const values = lines[i].split(',').map(v => {
-                    // Basic unquoting if value is wrapped in quotes
-                    if (v.startsWith('"') && v.endsWith('"')) {
-                        return v.substring(1, v.length - 1).replace(/""/g, '"').trim();
-                    }
-                    return v.trim();
-                });
-                const row = {};
-                headers.forEach((header, index) => {
-                    row[header] = values[index] !== undefined ? values[index] : null;
-                });
-                data.push(row);
-            }
-            return data;
-        };
+        // Main function to process text based on selected options
+        function processText() {
+            let text = inputTextarea.value;
+            const redactionString = redactionCharInput.value || '[REDACTED]'; // Default redaction string
 
-        const csvStringify = (data) => {
-            if (!Array.isArray(data) || data.length === 0) return '';
-            
-            const headers = Object.keys(data[0]);
-            const headerRow = headers.map(h => {
-                // Wrap header in quotes if it contains comma or double quote
-                if (h.includes(',') || h.includes('"')) {
-                    return `"${h.replace(/"/g, '""')}"`;
-                }
-                return h;
-            }).join(',');
+            let activeRegexes = [];
 
-            const dataRows = data.map(row =>
-                headers.map(header => {
-                    let value = row[header];
-                    if (value === null || value === undefined) value = '';
-                    if (typeof value !== 'string') value = String(value);
-                    // Wrap value in quotes if it contains comma, double quote, or newline
-                    if (value.includes(',') || value.includes('"') || value.includes('\n')) {
-                        value = `"${value.replace(/"/g, '""')}"`;
-                    }
-                    return value;
-                }).join(',')
-            );
-            return [headerRow, ...dataRows].join('\n');
-        };
+            // Add selected predefined patterns to the list
+            if (patternEmail.checked) activeRegexes.push(patterns.email);
+            if (patternPhone.checked) activeRegexes.push(patterns.phone);
+            if (patternCreditCard.checked) activeRegexes.push(patterns.creditCard);
+            if (patternIP.checked) activeRegexes.push(patterns.ipAddress);
+            if (patternDate.checked) activeRegexes.push(patterns.date);
 
-        // --- Markdown Table Formatters (Basic, assumes standard GitHub Flavored Markdown tables) ---
-        const mdTableParse = (text) => {
-            const lines = text.trim().split('\n').filter(line => line.trim());
-            if (lines.length < 2) return []; // Need at least header and separator
-
-            let headerLine = '';
-            let separatorLineIndex = -1;
-
-            for (let i = 0; i < lines.length; i++) {
-                const trimmedLine = lines[i].trim();
-                if (trimmedLine.startsWith('|') && trimmedLine.endsWith('|')) {
-                    if (trimmedLine.includes('---')) {
-                        separatorLineIndex = i;
-                        break;
-                    } else if (!headerLine) {
-                        headerLine = trimmedLine;
-                    }
+            const customRegexStr = customRegexInput.value.trim();
+            if (customRegexStr) {
+                try {
+                    // Create RegExp object from user's custom regex string
+                    activeRegexes.push(new RegExp(customRegexStr, 'gi')); // 'g' for global, 'i' for case-insensitive
+                } catch (e) {
+                    alert('Invalid custom regex provided: ' + e.message);
+                    return; // Stop processing if custom regex is invalid
                 }
             }
 
-            if (!headerLine || separatorLineIndex === -1) {
-                throw new Error("Invalid Markdown table format: Header or separator missing. Ensure format like `| H1 | H2 |\n|----|----|\n| V1 | V2 |`");
-            }
-
-            const headers = headerLine.split('|')
-                                        .map(h => h.trim())
-                                        .filter(h => h !== '');
-
-            if (headers.length === 0) return [];
-
-            const data = [];
-            for (let i = separatorLineIndex + 1; i < lines.length; i++) {
-                const line = lines[i].trim();
-                if (!line.startsWith('|') || !line.endsWith('|')) continue;
-                
-                const values = line.split('|')
-                                    .map(v => v.trim())
-                                    .filter(v => v !== '');
-
-                // Ensure data row has same number of columns as headers
-                if (values.length !== headers.length) {
-                    console.warn(`Row ${i + 1} has ${values.length} columns, expected ${headers.length}. Skipping.`);
-                    continue;
-                }
-
-                const row = {};
-                headers.forEach((header, index) => {
-                    row[header] = values[index];
-                });
-                data.push(row);
-            }
-            return data;
-        };
-
-        const mdTableStringify = (data) => {
-            if (!Array.isArray(data) || data.length === 0) return '';
-            
-            const headers = Object.keys(data[0]);
-            
-            // Calculate max column widths for padding
-            const colWidths = {};
-            headers.forEach(h => {
-                colWidths[h] = h.length;
-            });
-            data.forEach(row => {
-                headers.forEach(h => {
-                    const valueLength = String(row[h] || '').length;
-                    if (valueLength > colWidths[h]) {
-                        colWidths[h] = valueLength;
-                    }
-                });
-            });
-
-            // Header row
-            const headerRow = '| ' + headers.map(h => h.padEnd(colWidths[h])).join(' | ') + ' |';
-
-            // Separator row (GitHub Flavored Markdown requires at least 3 hyphens per column)
-            const separatorRow = '|' + headers.map(h => '-'.repeat(Math.max(3, colWidths[h] + 2))).join('|') + '|'; 
-
-            // Data rows
-            const dataRows = data.map(row => {
-                return '| ' + headers.map(h => String(row[h] || '').padEnd(colWidths[h])).join(' | ') + ' |';
-            }).join('\n');
-
-            return [headerRow, separatorRow, dataRows].join('\n');
-        };
-
-        // Mapping of format names to their parsing and stringifying functions
-        const formatters = {
-            json: {
-                parse: jsonParse,
-                stringify: (data, opts) => jsonStringify(data, { prettify: opts.prettify, minify: opts.minify }),
-            },
-            csv: {
-                parse: csvParse,
-                stringify: csvStringify,
-            },
-            mdtable: {
-                parse: mdTableParse,
-                stringify: mdTableStringify,
-            }
-        };
-
-        // Main conversion logic
-        const convertData = () => {
-            clearError();
-            const inputText = inputArea.value;
-            const inputFormat = inputFormatSelect.value;
-            const outputFormat = outputFormatSelect.value;
-
-            if (!inputText.trim()) {
-                outputArea.value = '';
-                return; // Don't show error immediately, just clear output
-            }
-
-            let parsedData;
-            try {
-                parsedData = formatters[inputFormat].parse(inputText);
-            } catch (e) {
-                errorDisplay.textContent = `Error parsing ${inputFormat}: ${e.message}`;
-                outputArea.value = '';
-                console.error(`Error parsing ${inputFormat}:`, e);
+            // If no patterns are selected, output the original text
+            if (activeRegexes.length === 0) {
+                outputTextarea.value = text;
                 return;
             }
 
-            try {
-                let stringifyOptions = {};
-                if (outputFormat === 'json') {
-                    stringifyOptions = {
-                        prettify: !outputMinifyOption.checked,
-                        minify: outputMinifyOption.checked,
-                    };
+            // Combine all active regex patterns into a single one for efficient processing
+            // This is done by joining their sources with a '|' (OR) operator
+            const finalRegex = new RegExp(
+                activeRegexes.map(r => r.source).join('|'),
+                'gi' // Ensure global and case-insensitive flags are applied
+            );
+
+            // Replace matched sensitive data
+            text = text.replace(finalRegex, (match) => {
+                if (modeAnonymize.checked) {
+                    // Replace with a random string of the same length to preserve text structure
+                    return generateRandomString(match.length);
+                } else {
+                    // Replace with the user-defined fixed redaction string
+                    return redactionString;
                 }
-                const outputText = formatters[outputFormat].stringify(parsedData, stringifyOptions);
-                outputArea.value = outputText;
-            } catch (e) {
-                errorDisplay.textContent = `Error converting to ${outputFormat}: ${e.message}`;
-                outputArea.value = '';
-                console.error(`Error stringifying to ${outputFormat}:`, e);
-            }
-        };
+            });
 
-        // Function to update visibility/state of format-specific options
-        const updateOptionStates = () => {
-            const currentInputFormat = inputFormatSelect.value;
-            const currentOutputFormat = outputFormatSelect.value;
+            outputTextarea.value = text; // Display processed text
+        }
 
-            // Input prettify/minify checkbox for JSON
-            if (currentInputFormat === 'json') {
-                inputFormatOptionLabel.classList.remove('opacity-50', 'cursor-not-allowed');
-                inputFormatOption.disabled = false;
-            } else {
-                inputFormatOption.checked = false; // Uncheck if not JSON
-                inputFormatOptionLabel.classList.add('opacity-50', 'cursor-not-allowed');
-                inputFormatOption.disabled = true;
-            }
+        // Event Listeners for buttons
+        redactButton.addEventListener('click', processText);
 
-            // Output minify checkbox for JSON
-            if (currentOutputFormat === 'json') {
-                outputMinifyOptionLabel.classList.remove('opacity-50', 'cursor-not-allowed');
-                outputMinifyOption.disabled = false;
-            } else {
-                outputMinifyOption.checked = false; // Uncheck if not JSON
-                outputMinifyOptionLabel.classList.add('opacity-50', 'cursor-not-allowed');
-                outputMinifyOption.disabled = true;
-            }
-        };
-
-        // --- Event Listeners ---
-        convertBtn.addEventListener('click', convertData);
-
-        inputFormatSelect.addEventListener('change', () => {
-            updateOptionStates();
-            convertData();
-        });
-        outputFormatSelect.addEventListener('change', () => {
-            updateOptionStates();
-            convertData();
-        });
-        outputMinifyOption.addEventListener('change', convertData); // Trigger convert on minify change
-
-        // Input Prettify/Minify functionality (action-based on input box)
-        inputFormatOption.addEventListener('change', () => {
-            clearError();
-            if (inputFormatSelect.value === 'json' && inputArea.value.trim()) {
-                try {
-                    const parsed = JSON.parse(inputArea.value);
-                    inputArea.value = inputFormatOption.checked ? JSON.stringify(parsed, null, 2) : JSON.stringify(parsed);
-                } catch (e) {
-                    errorDisplay.textContent = `Error formatting JSON input: ${e.message}`;
-                    inputFormatOption.checked = !inputFormatOption.checked; // Revert checkbox state on error
-                }
-            } else if (!inputArea.value.trim()) {
-                errorDisplay.textContent = 'No input data to format.';
-                inputFormatOption.checked = false; // Uncheck if no input
-            } else if (inputFormatSelect.value !== 'json') {
-                 errorDisplay.textContent = 'This option only applies to JSON input.';
-                 inputFormatOption.checked = false; // Uncheck if not JSON
-            }
+        clearButton.addEventListener('click', () => {
+            inputTextarea.value = '';
+            outputTextarea.value = '';
+            // Reset all checkboxes and inputs to their default state
+            patternEmail.checked = false;
+            patternPhone.checked = false;
+            patternCreditCard.checked = false;
+            patternIP.checked = false;
+            patternDate.checked = false;
+            customRegexInput.value = '';
+            redactionCharInput.value = '[REDACTED]';
+            modeRedact.checked = true; // Set default mode to 'redact'
         });
 
-        // Copy output to clipboard
-        copyOutputBtn.addEventListener('click', () => {
-            if (outputArea.value) {
-                navigator.clipboard.writeText(outputArea.value)
-                    .then(() => {
-                        const originalText = copyOutputBtn.textContent;
-                        copyOutputBtn.textContent = 'Copied!';
-                        setTimeout(() => {
-                            copyOutputBtn.textContent = originalText;
-                        }, 1500);
-                    })
-                    .catch(err => {
-                        errorDisplay.textContent = 'Failed to copy: ' + err;
-                        console.error('Failed to copy text: ', err);
-                    });
-            } else {
-                errorDisplay.textContent = 'Nothing to copy!';
-            }
-        });
+        copyOutputButton.addEventListener('click', () => {
+            outputTextarea.select(); // Select the text in the output area
+            outputTextarea.setSelectionRange(0, 99999); // For mobile devices
+            document.execCommand('copy'); // Copy the selected text to clipboard
 
-        // Initial setup on page load
-        updateOptionStates();
+            // Provide visual feedback to the user
+            const originalText = copyOutputButton.textContent;
+            copyOutputButton.textContent = 'Copied!';
+            copyOutputButton.classList.add('bg-green-500', 'hover:bg-green-600');
+            copyOutputButton.classList.remove('bg-green-600', 'hover:bg-green-700');
+            setTimeout(() => {
+                copyOutputButton.textContent = originalText;
+                copyOutputButton.classList.remove('bg-green-500', 'hover:bg-green-600');
+                copyOutputButton.classList.add('bg-green-600', 'hover:bg-green-700');
+            }, 2000); // Revert button text and color after 2 seconds
+        });
     </script>
 </body>
 </html>

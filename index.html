@@ -3,268 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text Clarity Pro - Advanced Text Analyzer</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>AI Prompt Refiner & Optimizer</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233B82F6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 17.5V9.5a2.5 2.5 0 0 0-5 0V17c0 1.38-1.12 2.5-2.5 2.5s-2.5-1.12-2.5-2.5V7a2.5 2.5 0 0 0-5 0v8.5'%3E%3C/path%3E%3Cpath d='M12 19.5V17'%3E%3C/path%3E%3Cpath d='M12 17a2.5 2.5 0 0 0 5 0V7.5a2.5 2.5 0 0 0-5 0V17'%3E%3C/path%3E%3C/svg%3E" type="image/svg+xml">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-        /* Custom scrollbar for dark mode textareas */
-        textarea::-webkit-scrollbar {
+        /* Custom scrollbar for dark mode */
+        ::-webkit-scrollbar {
             width: 8px;
+            height: 8px;
         }
-        textarea::-webkit-scrollbar-track {
-            background: #374151; /* gray-700 */
+        ::-webkit-scrollbar-track {
+            background: #2D3748; /* bg-gray-800 */
             border-radius: 10px;
         }
-        textarea::-webkit-scrollbar-thumb {
-            background: #60a5fa; /* blue-400 */
+        ::-webkit-scrollbar-thumb {
+            background: #4A5568; /* bg-gray-600 */
             border-radius: 10px;
         }
-        textarea::-webkit-scrollbar-thumb:hover {
-            background: #3b82f6; /* blue-500 */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6B7280; /* bg-gray-500 */
         }
     </style>
 </head>
-<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen p-4">
+<body class="bg-gray-900 text-gray-100 font-sans antialiased">
 
-    <div class="max-w-5xl w-full bg-gray-800 p-8 rounded-lg shadow-2xl border border-gray-700">
-        <h1 class="text-4xl font-extrabold text-center mb-4 text-blue-400">Text Clarity Pro</h1>
-        <p class="text-center text-gray-400 mb-8 max-w-2xl mx-auto">
-            Analyze your text for essential metrics: word, character, and sentence counts, reading/speaking times,
-            keyword density, and basic sentiment – all in real-time.
-        </p>
+    <div class="min-h-screen flex flex-col items-center py-10 px-4">
+        <header class="text-center mb-8">
+            <h1 class="text-5xl font-extrabold text-blue-400 mb-2 drop-shadow-lg">
+                AI Prompt Refiner
+            </h1>
+            <p class="text-xl text-gray-300 font-light">
+                Craft powerful prompts for generative AI models.
+            </p>
+        </header>
 
-        <textarea
-            id="textInput"
-            class="w-full h-48 p-4 mb-6 bg-gray-700 rounded-lg border border-gray-600 focus:ring-2 focus:ring-blue-500 outline-none text-gray-200 text-lg resize-y scrollbar-thin scrollbar-thumb-blue-400 scrollbar-track-gray-700 leading-relaxed"
-            placeholder="Paste or type your text here to analyze its clarity and content..."
-            spellcheck="false"
-        ></textarea>
+        <main class="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Input & Refinement Section -->
+            <section class="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 flex flex-col space-y-6">
+                <h2 class="text-3xl font-bold text-gray-100 mb-4 border-b pb-3 border-gray-700">Refine Your Prompt</h2>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
-            <div class="bg-gray-700 p-4 rounded-md flex flex-col items-center justify-center border border-gray-600">
-                <span class="text-sm text-gray-400">Words</span>
-                <span id="wordCount" class="text-3xl font-bold text-blue-400 mt-1">0</span>
-            </div>
-            <div class="bg-gray-700 p-4 rounded-md flex flex-col items-center justify-center border border-gray-600">
-                <span class="text-sm text-gray-400">Characters</span>
-                <span id="charCount" class="text-3xl font-bold text-blue-400 mt-1">0</span>
-            </div>
-            <div class="bg-gray-700 p-4 rounded-md flex flex-col items-center justify-center border border-gray-600">
-                <span class="text-sm text-gray-400">Sentences</span>
-                <span id="sentenceCount" class="text-3xl font-bold text-blue-400 mt-1">0</span>
-            </div>
-            <div class="bg-gray-700 p-4 rounded-md flex flex-col items-center justify-center border border-gray-600">
-                <span class="text-sm text-gray-400">Paragraphs</span>
-                <span id="paragraphCount" class="text-3xl font-bold text-blue-400 mt-1">0</span>
-            </div>
-            <div class="bg-gray-700 p-4 rounded-md flex flex-col items-center justify-center border border-gray-600">
-                <span class="text-sm text-gray-400">Avg. Word Length</span>
-                <span id="avgWordLength" class="text-3xl font-bold text-blue-400 mt-1">0.0</span>
-            </div>
-            <div class="bg-gray-700 p-4 rounded-md flex flex-col items-center justify-center border border-gray-600">
-                <span class="text-sm text-gray-400">Avg. Sentence Length (Words)</span>
-                <span id="avgSentenceLength" class="text-3xl font-bold text-blue-400 mt-1">0.0</span>
-            </div>
-            <div class="bg-gray-700 p-4 rounded-md flex flex-col items-center justify-center border border-gray-600">
-                <span class="text-sm text-gray-400">Reading Time (min)</span>
-                <span id="readingTime" class="text-3xl font-bold text-blue-400 mt-1">0</span>
-            </div>
-             <div class="bg-gray-700 p-4 rounded-md flex flex-col items-center justify-center border border-gray-600">
-                <span class="text-sm text-gray-400">Speaking Time (min)</span>
-                <span id="speakingTime" class="text-3xl font-bold text-blue-400 mt-1">0</span>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-gray-700 p-6 rounded-lg border border-gray-600">
-                <h3 class="text-xl font-semibold text-blue-300 mb-4">Top Keywords (Density)</h3>
-                <div id="keywordDensityList" class="divide-y divide-gray-600">
-                    <p id="noKeywords" class="text-gray-400 text-center py-2 text-sm">No keywords to display. Start typing!</p>
+                <!-- Base Prompt -->
+                <div>
+                    <label for="base-prompt" class="block text-lg font-medium text-gray-300 mb-2">Base Idea <span class="text-sm text-gray-400">(Your initial thought)</span></label>
+                    <textarea id="base-prompt"
+                              class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-gray-100 h-32 resize-y scrollbar-thin"
+                              placeholder="e.g., 'Write an essay about climate change' or 'Generate code for a Python script.'"
+                              oninput="updateRefinedPrompt()"
+                              data-label="BASE IDEA"></textarea>
                 </div>
-            </div>
 
-            <div class="bg-gray-700 p-6 rounded-lg border border-gray-600">
-                <h3 class="text-xl font-semibold text-blue-300 mb-4">Basic Sentiment Analysis</h3>
-                <div class="flex flex-wrap gap-4 justify-around">
-                    <div class="flex flex-col items-center">
-                        <span class="text-sm text-gray-400">Positive Words</span>
-                        <span id="positiveCount" class="text-2xl font-bold text-emerald-400 mt-1">0</span>
+                <!-- Refinement Modules Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Role -->
+                    <div>
+                        <label for="role" class="block text-lg font-medium text-gray-300 mb-2">Role <span class="text-sm text-gray-400">(Who should the AI act as?)</span></label>
+                        <input type="text" id="role"
+                               class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-gray-100 scrollbar-thin"
+                               placeholder="e.g., 'an expert frontend developer', 'a compassionate therapist'"
+                               oninput="updateRefinedPrompt()"
+                               data-label="ROLE">
                     </div>
-                    <div class="flex flex-col items-center">
-                        <span class="text-sm text-gray-400">Negative Words</span>
-                        <span id="negativeCount" class="text-2xl font-bold text-red-400 mt-1">0</span>
+
+                    <!-- Task -->
+                    <div>
+                        <label for="task" class="block text-lg font-medium text-gray-300 mb-2">Task <span class="text-sm text-gray-400">(What exactly should the AI do?)</span></label>
+                        <input type="text" id="task"
+                               class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-gray-100 scrollbar-thin"
+                               placeholder="e.g., 'Summarize the text', 'Generate a list of ideas', 'Explain the concept'"
+                               oninput="updateRefinedPrompt()"
+                               data-label="TASK">
                     </div>
-                    <div class="flex flex-col items-center">
-                        <span class="text-sm text-gray-400">Neutral Words</span>
-                        <span id="neutralCount" class="text-2xl font-bold text-gray-400 mt-1">0</span>
+
+                    <!-- Context -->
+                    <div class="md:col-span-2">
+                        <label for="context" class="block text-lg font-medium text-gray-300 mb-2">Context / Background <span class="text-sm text-gray-400">(Relevant information for the AI)</span></label>
+                        <textarea id="context"
+                                  class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-gray-100 h-24 resize-y scrollbar-thin"
+                                  placeholder="e.g., 'The user is a beginner and needs simple explanations.', 'The code should be in React with TypeScript.'"
+                                  oninput="updateRefinedPrompt()"
+                                  data-label="CONTEXT"></textarea>
+                    </div>
+
+                    <!-- Format -->
+                    <div>
+                        <label for="format" class="block text-lg font-medium text-gray-300 mb-2">Output Format <span class="text-sm text-gray-400">(How should the output be structured?)</span></label>
+                        <input type="text" id="format"
+                               class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-gray-100 scrollbar-thin"
+                               placeholder="e.g., 'Markdown table', 'JSON object', 'bulleted list', 'a 500-word essay'"
+                               oninput="updateRefinedPrompt()"
+                               data-label="FORMAT">
+                    </div>
+
+                    <!-- Tone / Style -->
+                    <div>
+                        <label for="tone" class="block text-lg font-medium text-gray-300 mb-2">Tone / Style <span class="text-sm text-gray-400">(How should the AI communicate?)</span></label>
+                        <input type="text" id="tone"
+                               class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-gray-100 scrollbar-thin"
+                               placeholder="e.g., 'professional', 'friendly and encouraging', 'concise and direct'"
+                               oninput="updateRefinedPrompt()"
+                               data-label="TONE">
+                    </div>
+
+                    <!-- Constraints -->
+                    <div class="md:col-span-2">
+                        <label for="constraints" class="block text-lg font-medium text-gray-300 mb-2">Constraints / Rules <span class="text-sm text-gray-400">(What should the AI avoid or adhere to?)</span></label>
+                        <textarea id="constraints"
+                                  class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-gray-100 h-24 resize-y scrollbar-thin"
+                                  placeholder="e.g., 'Do not use jargon.', 'Limit the response to 3 paragraphs.', 'Ensure factual accuracy.'"
+                                  oninput="updateRefinedPrompt()"
+                                  data-label="CONSTRAINTS"></textarea>
+                    </div>
+
+                    <!-- Examples -->
+                    <div class="md:col-span-2">
+                        <label for="examples" class="block text-lg font-medium text-gray-300 mb-2">Examples <span class="text-sm text-gray-400">(Provide input-output examples for better understanding)</span></label>
+                        <textarea id="examples"
+                                  class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-gray-100 h-24 resize-y scrollbar-thin"
+                                  placeholder="e.g., 'Input: 'apple' -> Output: 'fruit'; Input: 'car' -> Output: 'vehicle''"
+                                  oninput="updateRefinedPrompt()"
+                                  data-label="EXAMPLES"></textarea>
                     </div>
                 </div>
-                <p class="text-xs text-gray-500 mt-4 text-center">
-                    (Based on a simplified keyword dictionary. For advanced sentiment, use dedicated AI tools.)
-                </p>
-            </div>
-        </div>
+            </section>
 
-        <p class="text-xs text-gray-500 text-center mt-8">
-            Built with &#x2764;&#xfe0f; for clarity and efficiency.
-        </p>
+            <!-- Output Section -->
+            <section class="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 flex flex-col space-y-6">
+                <h2 class="text-3xl font-bold text-gray-100 mb-4 border-b pb-3 border-gray-700">Optimized Prompt Output</h2>
 
+                <div>
+                    <textarea id="refined-prompt"
+                              class="w-full p-4 bg-gray-900 border border-gray-600 rounded-lg text-gray-100 h-96 resize-y font-mono text-sm scrollbar-thin"
+                              readonly
+                              placeholder="Your optimized prompt will appear here as you refine it."></textarea>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <button onclick="copyToClipboard()"
+                            class="w-full sm:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800">
+                        Copy to Clipboard
+                    </button>
+                    <div class="text-gray-400 text-sm flex gap-4">
+                        <span id="word-count">Words: 0</span>
+                        <span id="char-count">Characters: 0</span>
+                    </div>
+                </div>
+
+                <div id="copy-message" class="text-green-400 text-center mt-2 opacity-0 transition-opacity duration-300">
+                    Prompt copied to clipboard!
+                </div>
+            </section>
+        </main>
+
+        <footer class="mt-12 text-gray-500 text-sm">
+            &copy; 2023 AI Prompt Refiner. Built with passion and code.
+        </footer>
     </div>
 
     <script>
-        const textInput = document.getElementById('textInput');
-        const wordCountSpan = document.getElementById('wordCount');
-        const charCountSpan = document.getElementById('charCount');
-        const sentenceCountSpan = document.getElementById('sentenceCount');
-        const paragraphCountSpan = document.getElementById('paragraphCount');
-        const avgWordLengthSpan = document.getElementById('avgWordLength');
-        const avgSentenceLengthSpan = document.getElementById('avgSentenceLength');
-        const readingTimeSpan = document.getElementById('readingTime');
-        const speakingTimeSpan = document.getElementById('speakingTime');
-        const keywordDensityList = document.getElementById('keywordDensityList');
-        const noKeywordsParagraph = document.getElementById('noKeywords');
-        const positiveCountSpan = document.getElementById('positiveCount');
-        const negativeCountSpan = document.getElementById('negativeCount');
-        const neutralCountSpan = document.getElementById('neutralCount');
+        const elements = {};
+        ['base-prompt', 'role', 'task', 'context', 'format', 'tone', 'constraints', 'examples', 'refined-prompt', 'word-count', 'char-count', 'copy-message'].forEach(id => {
+            elements[id] = document.getElementById(id);
+        });
 
-        // Common reading speed: 200-250 words per minute (using 200 for a conservative estimate)
-        const WORDS_PER_MINUTE_READING = 200;
-        // Common speaking speed: 130-150 words per minute (using 130 for a conservative estimate)
-        const WORDS_PER_MINUTE_SPEAKING = 130;
+        function updateRefinedPrompt() {
+            const sections = [
+                { id: 'base-prompt', label: elements['base-prompt'].dataset.label, prefix: '', suffix: '', type: 'textarea' },
+                { id: 'role', label: elements['role'].dataset.label, prefix: 'You are ', suffix: '.' },
+                { id: 'task', label: elements['task'].dataset.label, prefix: 'Your task is to ', suffix: '.' },
+                { id: 'context', label: elements['context'].dataset.label, prefix: 'Given the following context: ', suffix: '.' },
+                { id: 'format', label: elements['format'].dataset.label, prefix: 'Present the output in the following format: ', suffix: '.' },
+                { id: 'tone', label: elements['tone'].dataset.label, prefix: 'The tone should be ', suffix: '.' },
+                { id: 'constraints', label: elements['constraints'].dataset.label, prefix: 'Adhere to these constraints: ', suffix: '.' },
+                { id: 'examples', label: elements['examples'].dataset.label, prefix: 'Here are some examples: ', suffix: '.' }
+            ];
 
-        // Simple lists for basic sentiment analysis (can be expanded)
-        const positiveWords = new Set([
-            'great', 'excellent', 'amazing', 'fantastic', 'good', 'happy', 'love', 'wonderful', 'joy', 'success',
-            'positive', 'brilliant', 'superb', 'awesome', 'effective', 'efficient', 'benefit', 'advantage', 'achieve', 'win',
-            'delightful', 'charming', 'optimistic', 'hopeful', 'friendly', 'kind', 'brave', 'strong', 'masterful', 'thrilled'
-        ]);
-        const negativeWords = new Set([
-            'bad', 'terrible', 'horrible', 'poor', 'sad', 'hate', 'awful', 'failure', 'problem', 'difficult',
-            'negative', 'challenge', 'crisis', 'risk', 'loss', 'disadvantage', 'struggle', 'fail', 'worry', 'stress',
-            'annoying', 'frustrating', 'upset', 'disappointing', 'catastrophic', 'inferior', 'dreadful', 'gloomy', 'cruel', 'weak'
-        ]);
+            let promptParts = [];
 
-        function analyzeText() {
-            const text = textInput.value;
+            sections.forEach(section => {
+                const value = elements[section.id].value.trim();
+                if (value) {
+                    let formattedValue = value;
 
-            // Character Count
-            const charCount = text.length;
-            charCountSpan.textContent = charCount;
+                    // Add prefix/suffix only if not a base prompt and value exists
+                    if (section.id !== 'base-prompt') {
+                        formattedValue = `${section.prefix}${value}${section.suffix}`;
+                    }
 
-            // Word Count
-            const words = text.match(/\b\w+\b/g); // Matches whole words
-            const wordCount = words ? words.length : 0;
-            wordCountSpan.textContent = wordCount;
-
-            // Sentence Count
-            // Improved regex: Matches sequences ending with a period, question mark, or exclamation mark,
-            // optionally followed by quotes or parentheses, and whitespace.
-            const sentences = text.match(/[^.!?]+(?:[.!?]+["')]?|\n|$)/g) || [];
-            // Filter out empty sentences or those containing only whitespace after splitting
-            const actualSentences = sentences.filter(s => s.trim().length > 0);
-            const sentenceCount = actualSentences.length || (wordCount > 0 ? 1 : 0);
-            sentenceCountSpan.textContent = sentenceCount;
-
-            // Paragraph Count
-            const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim() !== '');
-            const paragraphCount = paragraphs.length;
-            paragraphCountSpan.textContent = paragraphCount;
-
-            // Average Word Length
-            let totalWordLength = 0;
-            if (words) {
-                words.forEach(word => totalWordLength += word.length);
-            }
-            const avgWordLength = wordCount > 0 ? (totalWordLength / wordCount).toFixed(1) : '0.0';
-            avgWordLengthSpan.textContent = avgWordLength;
-
-            // Average Sentence Length (Words)
-            const avgSentenceLength = sentenceCount > 0 ? (wordCount / sentenceCount).toFixed(1) : '0.0';
-            avgSentenceLengthSpan.textContent = avgSentenceLength;
-
-            // Reading Time (in minutes, rounded up)
-            const readingTime = wordCount > 0 ? Math.ceil(wordCount / WORDS_PER_MINUTE_READING) : 0;
-            readingTimeSpan.textContent = readingTime;
-
-            // Speaking Time (in minutes, rounded up)
-            const speakingTime = wordCount > 0 ? Math.ceil(wordCount / WORDS_PER_MINUTE_SPEAKING) : 0;
-            speakingTimeSpan.textContent = speakingTime;
-
-            // Keyword Density
-            updateKeywordDensity(words);
-
-            // Sentiment Analysis
-            updateSentimentAnalysis(words);
-        }
-
-        function updateKeywordDensity(words) {
-            keywordDensityList.innerHTML = ''; // Clear previous
-            noKeywordsParagraph.style.display = 'block'; // Show "No keywords" by default
-
-            if (!words || words.length === 0) {
-                return;
-            }
-
-            const wordFrequencies = {};
-            words.forEach(word => {
-                const lowerCaseWord = word.toLowerCase();
-                // Filter out very common, short words that are usually stop words
-                if (lowerCaseWord.length > 2 && !['the', 'and', 'a', 'to', 'of', 'is', 'in', 'it', 'i', 'you', 'for', 'on', 'with', 'as', 'at', 'be', 'this', 'that'].includes(lowerCaseWord)) {
-                    wordFrequencies[lowerCaseWord] = (wordFrequencies[lowerCaseWord] || 0) + 1;
+                    // For multi-line inputs, ensure each line is handled
+                    if (section.type === 'textarea' || value.includes('\n')) {
+                        const lines = formattedValue.split('\n').filter(line => line.trim() !== '');
+                        if (lines.length > 0) {
+                            promptParts.push(`${section.label}:\n${lines.map(line => `- ${line.trim()}`).join('\n')}`);
+                        }
+                    } else {
+                        promptParts.push(`${section.label}: ${formattedValue}`);
+                    }
                 }
             });
 
-            const sortedKeywords = Object.entries(wordFrequencies)
-                .sort(([, countA], [, countB]) => countB - countA)
-                .slice(0, 10); // Show top 10
+            const finalPrompt = promptParts.join('\n\n');
+            elements['refined-prompt'].value = finalPrompt;
 
-            if (sortedKeywords.length > 0) {
-                noKeywordsParagraph.style.display = 'none'; // Hide "No keywords"
-                sortedKeywords.forEach(([keyword, count]) => {
-                    const percentage = ((count / words.length) * 100).toFixed(2);
-                    const listItem = document.createElement('div');
-                    listItem.className = 'flex justify-between items-center py-2 text-gray-200';
-                    listItem.innerHTML = `
-                        <span class="font-medium text-blue-300">${keyword}</span>
-                        <span class="text-gray-400">${count} <span class="text-sm text-gray-500">(${percentage}%)</span></span>
-                    `;
-                    keywordDensityList.appendChild(listItem);
+            // Update word and character counts
+            const text = finalPrompt;
+            elements['word-count'].textContent = `Words: ${text.split(/\s+/).filter(word => word.length > 0).length}`;
+            elements['char-count'].textContent = `Characters: ${text.length}`;
+        }
+
+        function copyToClipboard() {
+            const refinedPromptText = elements['refined-prompt'].value;
+            if (refinedPromptText) {
+                navigator.clipboard.writeText(refinedPromptText).then(() => {
+                    elements['copy-message'].classList.remove('opacity-0');
+                    elements['copy-message'].classList.add('opacity-100');
+                    setTimeout(() => {
+                        elements['copy-message'].classList.remove('opacity-100');
+                        elements['copy-message'].classList.add('opacity-0');
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy text: ', err);
+                    alert('Failed to copy prompt to clipboard. Please copy manually.');
                 });
             }
         }
 
-        function updateSentimentAnalysis(words) {
-            let positive = 0;
-            let negative = 0;
-            let neutral = 0;
-
-            if (words && words.length > 0) {
-                words.forEach(word => {
-                    const lowerCaseWord = word.toLowerCase();
-                    if (positiveWords.has(lowerCaseWord)) {
-                        positive++;
-                    } else if (negativeWords.has(lowerCaseWord)) {
-                        negative++;
-                    } else {
-                        neutral++; // Any word not explicitly positive or negative
-                    }
-                });
-            }
-
-            positiveCountSpan.textContent = positive;
-            negativeCountSpan.textContent = negative;
-            // Ensure neutral count doesn't exceed total words if no matches are found for positive/negative.
-            // Adjust neutral to reflect words not matching sentiment lists
-            neutralCountSpan.textContent = Math.max(0, (words ? words.length : 0) - positive - negative);
-        }
-
-        // Initial analysis on load and on text input
-        textInput.addEventListener('input', analyzeText);
-        analyzeText(); // Run once on page load to set initial values
+        // Initial update on page load
+        updateRefinedPrompt();
     </script>
 </body>
 </html>

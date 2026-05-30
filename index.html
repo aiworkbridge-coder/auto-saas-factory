@@ -1,12 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Prompt Architect & Token Estimator</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Text Clarity Pro - Advanced Text Analyzer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -14,184 +11,260 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
+        /* Custom scrollbar for dark mode textareas */
+        textarea::-webkit-scrollbar {
+            width: 8px;
+        }
+        textarea::-webkit-scrollbar-track {
+            background: #374151; /* gray-700 */
+            border-radius: 10px;
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background: #60a5fa; /* blue-400 */
+            border-radius: 10px;
+        }
+        textarea::-webkit-scrollbar-thumb:hover {
+            background: #3b82f6; /* blue-500 */
+        }
     </style>
 </head>
-<body class="bg-gray-950 text-gray-100 min-h-screen p-4 sm:p-8 flex flex-col items-center">
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen p-4">
 
-    <div class="w-full max-w-6xl mx-auto space-y-8">
-        <header class="text-center mb-10">
-            <h1 class="text-4xl sm:text-5xl font-extrabold text-blue-400 mb-2 leading-tight">AI Prompt Architect</h1>
-            <p class="text-xl sm:text-2xl text-gray-300 font-light">Craft structured prompts with real-time token estimation.</p>
-        </header>
+    <div class="max-w-5xl w-full bg-gray-800 p-8 rounded-lg shadow-2xl border border-gray-700">
+        <h1 class="text-4xl font-extrabold text-center mb-4 text-blue-400">Text Clarity Pro</h1>
+        <p class="text-center text-gray-400 mb-8 max-w-2xl mx-auto">
+            Analyze your text for essential metrics: word, character, and sentence counts, reading/speaking times,
+            keyword density, and basic sentiment – all in real-time.
+        </p>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Prompt Builder Section -->
-            <section class="bg-gray-900 p-6 sm:p-8 rounded-xl shadow-lg border border-gray-800 flex flex-col space-y-6">
-                <h2 class="text-2xl font-bold text-gray-200 border-b border-gray-700 pb-4 mb-4">Prompt Components</h2>
+        <textarea
+            id="textInput"
+            class="w-full h-48 p-4 mb-6 bg-gray-700 rounded-lg border border-gray-600 focus:ring-2 focus:ring-blue-500 outline-none text-gray-200 text-lg resize-y scrollbar-thin scrollbar-thumb-blue-400 scrollbar-track-gray-700 leading-relaxed"
+            placeholder="Paste or type your text here to analyze its clarity and content..."
+            spellcheck="false"
+        ></textarea>
 
-                <div>
-                    <label for="persona" class="block text-sm font-medium text-gray-400 mb-2">Persona (Optional)</label>
-                    <textarea id="persona" rows="2" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors duration-200 resize-none" placeholder="e.g., 'You are an expert content strategist.'"></textarea>
-                </div>
-
-                <div>
-                    <label for="task" class="block text-sm font-medium text-gray-400 mb-2">Task <span class="text-red-400">*</span></label>
-                    <textarea id="task" rows="3" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors duration-200 resize-none" placeholder="e.g., 'Generate 5 unique blog post ideas about sustainable living for millennials.'"></textarea>
-                </div>
-
-                <div>
-                    <label for="context" class="block text-sm font-medium text-gray-400 mb-2">Context (Optional)</label>
-                    <textarea id="context" rows="4" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors duration-200 resize-none" placeholder="e.g., 'The target audience is eco-conscious millennials aged 25-35. Our brand promotes zero-waste products.'"></textarea>
-                </div>
-
-                <div>
-                    <label for="format" class="block text-sm font-medium text-gray-400 mb-2">Format (Optional)</label>
-                    <textarea id="format" rows="2" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors duration-200 resize-none" placeholder="e.g., 'Provide output as a numbered list with a catchy title and a 2-sentence description for each idea.'"></textarea>
-                </div>
-
-                <div>
-                    <label for="constraints" class="block text-sm font-medium text-gray-400 mb-2">Constraints (Optional)</label>
-                    <textarea id="constraints" rows="2" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors duration-200 resize-none" placeholder="e.g., 'Avoid jargon. Do not exceed 500 words in total. Focus on actionable tips.'"></textarea>
-                </div>
-
-                <div>
-                    <label for="examples" class="block text-sm font-medium text-gray-400 mb-2">Examples (Optional)</label>
-                    <textarea id="examples" rows="3" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors duration-200 resize-none" placeholder="e.g., 'Example idea: 'Zero-Waste Kitchen Hacks: Your Guide to Sustainable Cooking'.'"></textarea>
-                </div>
-
-                <div class="flex flex-wrap gap-4 mt-6">
-                    <button id="generatePromptBtn" class="flex-grow sm:flex-initial px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-all duration-200 text-center">
-                        Generate Prompt
-                    </button>
-                    <button id="clearAllBtn" class="flex-grow sm:flex-initial px-6 py-3 bg-gray-700 text-gray-200 font-semibold rounded-lg shadow-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-all duration-200 text-center">
-                        Clear All
-                    </button>
-                </div>
-            </section>
-
-            <!-- Generated Prompt & Tools Section -->
-            <section class="bg-gray-900 p-6 sm:p-8 rounded-xl shadow-lg border border-gray-800 flex flex-col space-y-6">
-                <h2 class="text-2xl font-bold text-gray-200 border-b border-gray-700 pb-4 mb-4">Generated Prompt</h2>
-
-                <div>
-                    <label for="generatedPrompt" class="block text-sm font-medium text-gray-400 mb-2">Your Structured Prompt</label>
-                    <textarea id="generatedPrompt" rows="20" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors duration-200 resize-none" placeholder="Your generated AI prompt will appear here..." readonly></textarea>
-                </div>
-
-                <div class="bg-gray-800 p-4 rounded-lg flex items-center justify-between">
-                    <span class="text-gray-300 font-medium">Estimated Tokens:</span>
-                    <span id="tokenEstimate" class="text-blue-400 text-xl font-bold">0</span>
-                </div>
-
-                <button id="copyToClipboardBtn" class="w-full px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-all duration-200">
-                    Copy to Clipboard
-                </button>
-                <div id="copySuccessMessage" class="hidden text-center text-sm text-green-400 mt-2">Copied to clipboard!</div>
-            </section>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
+            <div class="bg-gray-700 p-4 rounded-md flex flex-col items-center justify-center border border-gray-600">
+                <span class="text-sm text-gray-400">Words</span>
+                <span id="wordCount" class="text-3xl font-bold text-blue-400 mt-1">0</span>
+            </div>
+            <div class="bg-gray-700 p-4 rounded-md flex flex-col items-center justify-center border border-gray-600">
+                <span class="text-sm text-gray-400">Characters</span>
+                <span id="charCount" class="text-3xl font-bold text-blue-400 mt-1">0</span>
+            </div>
+            <div class="bg-gray-700 p-4 rounded-md flex flex-col items-center justify-center border border-gray-600">
+                <span class="text-sm text-gray-400">Sentences</span>
+                <span id="sentenceCount" class="text-3xl font-bold text-blue-400 mt-1">0</span>
+            </div>
+            <div class="bg-gray-700 p-4 rounded-md flex flex-col items-center justify-center border border-gray-600">
+                <span class="text-sm text-gray-400">Paragraphs</span>
+                <span id="paragraphCount" class="text-3xl font-bold text-blue-400 mt-1">0</span>
+            </div>
+            <div class="bg-gray-700 p-4 rounded-md flex flex-col items-center justify-center border border-gray-600">
+                <span class="text-sm text-gray-400">Avg. Word Length</span>
+                <span id="avgWordLength" class="text-3xl font-bold text-blue-400 mt-1">0.0</span>
+            </div>
+            <div class="bg-gray-700 p-4 rounded-md flex flex-col items-center justify-center border border-gray-600">
+                <span class="text-sm text-gray-400">Avg. Sentence Length (Words)</span>
+                <span id="avgSentenceLength" class="text-3xl font-bold text-blue-400 mt-1">0.0</span>
+            </div>
+            <div class="bg-gray-700 p-4 rounded-md flex flex-col items-center justify-center border border-gray-600">
+                <span class="text-sm text-gray-400">Reading Time (min)</span>
+                <span id="readingTime" class="text-3xl font-bold text-blue-400 mt-1">0</span>
+            </div>
+             <div class="bg-gray-700 p-4 rounded-md flex flex-col items-center justify-center border border-gray-600">
+                <span class="text-sm text-gray-400">Speaking Time (min)</span>
+                <span id="speakingTime" class="text-3xl font-bold text-blue-400 mt-1">0</span>
+            </div>
         </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-gray-700 p-6 rounded-lg border border-gray-600">
+                <h3 class="text-xl font-semibold text-blue-300 mb-4">Top Keywords (Density)</h3>
+                <div id="keywordDensityList" class="divide-y divide-gray-600">
+                    <p id="noKeywords" class="text-gray-400 text-center py-2 text-sm">No keywords to display. Start typing!</p>
+                </div>
+            </div>
+
+            <div class="bg-gray-700 p-6 rounded-lg border border-gray-600">
+                <h3 class="text-xl font-semibold text-blue-300 mb-4">Basic Sentiment Analysis</h3>
+                <div class="flex flex-wrap gap-4 justify-around">
+                    <div class="flex flex-col items-center">
+                        <span class="text-sm text-gray-400">Positive Words</span>
+                        <span id="positiveCount" class="text-2xl font-bold text-emerald-400 mt-1">0</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <span class="text-sm text-gray-400">Negative Words</span>
+                        <span id="negativeCount" class="text-2xl font-bold text-red-400 mt-1">0</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <span class="text-sm text-gray-400">Neutral Words</span>
+                        <span id="neutralCount" class="text-2xl font-bold text-gray-400 mt-1">0</span>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-500 mt-4 text-center">
+                    (Based on a simplified keyword dictionary. For advanced sentiment, use dedicated AI tools.)
+                </p>
+            </div>
+        </div>
+
+        <p class="text-xs text-gray-500 text-center mt-8">
+            Built with &#x2764;&#xfe0f; for clarity and efficiency.
+        </p>
+
     </div>
 
     <script>
-        const personaEl = document.getElementById('persona');
-        const taskEl = document.getElementById('task');
-        const contextEl = document.getElementById('context');
-        const formatEl = document.getElementById('format');
-        const constraintsEl = document.getElementById('constraints');
-        const examplesEl = document.getElementById('examples');
-        const generatedPromptEl = document.getElementById('generatedPrompt');
-        const tokenEstimateEl = document.getElementById('tokenEstimate');
-        const generatePromptBtn = document.getElementById('generatePromptBtn');
-        const copyToClipboardBtn = document.getElementById('copyToClipboardBtn');
-        const clearAllBtn = document.getElementById('clearAllBtn');
-        const copySuccessMessage = document.getElementById('copySuccessMessage');
+        const textInput = document.getElementById('textInput');
+        const wordCountSpan = document.getElementById('wordCount');
+        const charCountSpan = document.getElementById('charCount');
+        const sentenceCountSpan = document.getElementById('sentenceCount');
+        const paragraphCountSpan = document.getElementById('paragraphCount');
+        const avgWordLengthSpan = document.getElementById('avgWordLength');
+        const avgSentenceLengthSpan = document.getElementById('avgSentenceLength');
+        const readingTimeSpan = document.getElementById('readingTime');
+        const speakingTimeSpan = document.getElementById('speakingTime');
+        const keywordDensityList = document.getElementById('keywordDensityList');
+        const noKeywordsParagraph = document.getElementById('noKeywords');
+        const positiveCountSpan = document.getElementById('positiveCount');
+        const negativeCountSpan = document.getElementById('negativeCount');
+        const neutralCountSpan = document.getElementById('neutralCount');
 
-        // Simple token estimation (approximate for English text)
-        // A common rule of thumb for GPT models is ~4 characters per token.
-        function estimateTokens(text) {
-            if (!text) return 0;
-            return Math.ceil(text.length / 4);
-        }
+        // Common reading speed: 200-250 words per minute (using 200 for a conservative estimate)
+        const WORDS_PER_MINUTE_READING = 200;
+        // Common speaking speed: 130-150 words per minute (using 130 for a conservative estimate)
+        const WORDS_PER_MINUTE_SPEAKING = 130;
 
-        function updateTokenEstimate() {
-            const promptText = generatedPromptEl.value;
-            tokenEstimateEl.textContent = estimateTokens(promptText);
-        }
+        // Simple lists for basic sentiment analysis (can be expanded)
+        const positiveWords = new Set([
+            'great', 'excellent', 'amazing', 'fantastic', 'good', 'happy', 'love', 'wonderful', 'joy', 'success',
+            'positive', 'brilliant', 'superb', 'awesome', 'effective', 'efficient', 'benefit', 'advantage', 'achieve', 'win',
+            'delightful', 'charming', 'optimistic', 'hopeful', 'friendly', 'kind', 'brave', 'strong', 'masterful', 'thrilled'
+        ]);
+        const negativeWords = new Set([
+            'bad', 'terrible', 'horrible', 'poor', 'sad', 'hate', 'awful', 'failure', 'problem', 'difficult',
+            'negative', 'challenge', 'crisis', 'risk', 'loss', 'disadvantage', 'struggle', 'fail', 'worry', 'stress',
+            'annoying', 'frustrating', 'upset', 'disappointing', 'catastrophic', 'inferior', 'dreadful', 'gloomy', 'cruel', 'weak'
+        ]);
 
-        function generatePrompt() {
-            let prompt = [];
+        function analyzeText() {
+            const text = textInput.value;
 
-            if (personaEl.value.trim()) {
-                prompt.push(`**Persona:** ${personaEl.value.trim()}`);
+            // Character Count
+            const charCount = text.length;
+            charCountSpan.textContent = charCount;
+
+            // Word Count
+            const words = text.match(/\b\w+\b/g); // Matches whole words
+            const wordCount = words ? words.length : 0;
+            wordCountSpan.textContent = wordCount;
+
+            // Sentence Count
+            // Improved regex: Matches sequences ending with a period, question mark, or exclamation mark,
+            // optionally followed by quotes or parentheses, and whitespace.
+            const sentences = text.match(/[^.!?]+(?:[.!?]+["')]?|\n|$)/g) || [];
+            // Filter out empty sentences or those containing only whitespace after splitting
+            const actualSentences = sentences.filter(s => s.trim().length > 0);
+            const sentenceCount = actualSentences.length || (wordCount > 0 ? 1 : 0);
+            sentenceCountSpan.textContent = sentenceCount;
+
+            // Paragraph Count
+            const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim() !== '');
+            const paragraphCount = paragraphs.length;
+            paragraphCountSpan.textContent = paragraphCount;
+
+            // Average Word Length
+            let totalWordLength = 0;
+            if (words) {
+                words.forEach(word => totalWordLength += word.length);
             }
-            if (taskEl.value.trim()) {
-                prompt.push(`**Task:** ${taskEl.value.trim()}`);
-            } else {
-                alert('The "Task" field is required to generate a useful prompt.');
-                taskEl.focus();
+            const avgWordLength = wordCount > 0 ? (totalWordLength / wordCount).toFixed(1) : '0.0';
+            avgWordLengthSpan.textContent = avgWordLength;
+
+            // Average Sentence Length (Words)
+            const avgSentenceLength = sentenceCount > 0 ? (wordCount / sentenceCount).toFixed(1) : '0.0';
+            avgSentenceLengthSpan.textContent = avgSentenceLength;
+
+            // Reading Time (in minutes, rounded up)
+            const readingTime = wordCount > 0 ? Math.ceil(wordCount / WORDS_PER_MINUTE_READING) : 0;
+            readingTimeSpan.textContent = readingTime;
+
+            // Speaking Time (in minutes, rounded up)
+            const speakingTime = wordCount > 0 ? Math.ceil(wordCount / WORDS_PER_MINUTE_SPEAKING) : 0;
+            speakingTimeSpan.textContent = speakingTime;
+
+            // Keyword Density
+            updateKeywordDensity(words);
+
+            // Sentiment Analysis
+            updateSentimentAnalysis(words);
+        }
+
+        function updateKeywordDensity(words) {
+            keywordDensityList.innerHTML = ''; // Clear previous
+            noKeywordsParagraph.style.display = 'block'; // Show "No keywords" by default
+
+            if (!words || words.length === 0) {
                 return;
             }
-            if (contextEl.value.trim()) {
-                prompt.push(`**Context:** ${contextEl.value.trim()}`);
-            }
-            if (formatEl.value.trim()) {
-                prompt.push(`**Format:** ${formatEl.value.trim()}`);
-            }
-            if (constraintsEl.value.trim()) {
-                prompt.push(`**Constraints:** ${constraintsEl.value.trim()}`);
-            }
-            if (examplesEl.value.trim()) {
-                prompt.push(`**Examples:**\n${examplesEl.value.trim()}`);
-            }
 
-            generatedPromptEl.value = prompt.join('\n\n') + '\n\n---END PROMPT---';
-            updateTokenEstimate();
-        }
+            const wordFrequencies = {};
+            words.forEach(word => {
+                const lowerCaseWord = word.toLowerCase();
+                // Filter out very common, short words that are usually stop words
+                if (lowerCaseWord.length > 2 && !['the', 'and', 'a', 'to', 'of', 'is', 'in', 'it', 'i', 'you', 'for', 'on', 'with', 'as', 'at', 'be', 'this', 'that'].includes(lowerCaseWord)) {
+                    wordFrequencies[lowerCaseWord] = (wordFrequencies[lowerCaseWord] || 0) + 1;
+                }
+            });
 
-        function copyToClipboard() {
-            if (generatedPromptEl.value) {
-                navigator.clipboard.writeText(generatedPromptEl.value)
-                    .then(() => {
-                        copySuccessMessage.classList.remove('hidden');
-                        setTimeout(() => {
-                            copySuccessMessage.classList.add('hidden');
-                        }, 2000);
-                    })
-                    .catch(err => {
-                        console.error('Failed to copy: ', err);
-                        alert('Failed to copy prompt to clipboard. Please try again or copy manually.');
-                    });
+            const sortedKeywords = Object.entries(wordFrequencies)
+                .sort(([, countA], [, countB]) => countB - countA)
+                .slice(0, 10); // Show top 10
+
+            if (sortedKeywords.length > 0) {
+                noKeywordsParagraph.style.display = 'none'; // Hide "No keywords"
+                sortedKeywords.forEach(([keyword, count]) => {
+                    const percentage = ((count / words.length) * 100).toFixed(2);
+                    const listItem = document.createElement('div');
+                    listItem.className = 'flex justify-between items-center py-2 text-gray-200';
+                    listItem.innerHTML = `
+                        <span class="font-medium text-blue-300">${keyword}</span>
+                        <span class="text-gray-400">${count} <span class="text-sm text-gray-500">(${percentage}%)</span></span>
+                    `;
+                    keywordDensityList.appendChild(listItem);
+                });
             }
         }
 
-        function clearAll() {
-            personaEl.value = '';
-            taskEl.value = '';
-            contextEl.value = '';
-            formatEl.value = '';
-            constraintsEl.value = '';
-            examplesEl.value = '';
-            generatedPromptEl.value = '';
-            updateTokenEstimate();
-            copySuccessMessage.classList.add('hidden'); // Hide any previous copy message
+        function updateSentimentAnalysis(words) {
+            let positive = 0;
+            let negative = 0;
+            let neutral = 0;
+
+            if (words && words.length > 0) {
+                words.forEach(word => {
+                    const lowerCaseWord = word.toLowerCase();
+                    if (positiveWords.has(lowerCaseWord)) {
+                        positive++;
+                    } else if (negativeWords.has(lowerCaseWord)) {
+                        negative++;
+                    } else {
+                        neutral++; // Any word not explicitly positive or negative
+                    }
+                });
+            }
+
+            positiveCountSpan.textContent = positive;
+            negativeCountSpan.textContent = negative;
+            // Ensure neutral count doesn't exceed total words if no matches are found for positive/negative.
+            // Adjust neutral to reflect words not matching sentiment lists
+            neutralCountSpan.textContent = Math.max(0, (words ? words.length : 0) - positive - negative);
         }
 
-        // Event Listeners
-        generatePromptBtn.addEventListener('click', generatePrompt);
-        copyToClipboardBtn.addEventListener('click', copyToClipboard);
-        clearAllBtn.addEventListener('click', clearAll);
-
-        // Optional: Update token estimate on input for immediate feedback
-        const inputElements = [personaEl, taskEl, contextEl, formatEl, constraintsEl, examplesEl];
-        inputElements.forEach(el => el.addEventListener('input', () => {
-             // Re-generate prompt and update token estimate if any input changes after initial generation
-             // Or, simply update the generated prompt visually and its token estimate
-             // For simplicity, let's keep it on button click for generatePrompt,
-             // but if we want *live* generation, uncomment this:
-             // generatePrompt();
-        }));
-
-        // Initial update
-        updateTokenEstimate();
+        // Initial analysis on load and on text input
+        textInput.addEventListener('input', analyzeText);
+        analyzeText(); // Run once on page load to set initial values
     </script>
 </body>
 </html>
